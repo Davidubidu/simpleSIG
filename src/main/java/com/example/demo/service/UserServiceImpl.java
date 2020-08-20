@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -116,6 +119,13 @@ public class UserServiceImpl implements UserService{
 		
 		return new ResponseEntity<Optional<User>>(u, response);
 	}
+	/**
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User us = dao.findByUserName(username);
+		UserDetails ud = (UserDetails) new User(us.getUserName(), us.getPassword());
+		return ud;
+	}*/
 
 
 }
