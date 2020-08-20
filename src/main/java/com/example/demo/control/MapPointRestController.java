@@ -22,7 +22,7 @@ import com.example.demo.model.MapPoint;
 import com.example.demo.service.MapPointServiceImpl;
 
 @RestController
-@RequestMapping(value= "/api/mongo/MapPoints")
+@RequestMapping(value= "/api/MapPoints")
 @Component
 public class MapPointRestController {
 	
