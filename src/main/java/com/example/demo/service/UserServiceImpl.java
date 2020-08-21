@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -103,11 +106,14 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public ResponseEntity<Optional<User>> login(String[] userData) {
-		HttpStatus response;
-		Optional<User> u;
+		HttpStatus response = HttpStatus.OK;
+		Optional<User> u = null;
+		
 		try {
+			/** FIXME: fix this if needed
 			u = dao.findByUserNameAndPassword(userData[0], userData[1]);
 			response = (u != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+			*/
 		} catch (Exception e) {
 			logger.error(e.toString());
 			u = null;
@@ -116,6 +122,13 @@ public class UserServiceImpl implements UserService{
 		
 		return new ResponseEntity<Optional<User>>(u, response);
 	}
+	/**
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User us = dao.findByUserName(username);
+		UserDetails ud = (UserDetails) new User(us.getUserName(), us.getPassword());
+		return ud;
+	}*/
 
 
 }
