@@ -106,11 +106,14 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public ResponseEntity<Optional<User>> login(String[] userData) {
-		HttpStatus response;
-		Optional<User> u;
+		HttpStatus response = HttpStatus.OK;
+		Optional<User> u = null;
+		
 		try {
+			/** FIXME: fix this if needed
 			u = dao.findByUserNameAndPassword(userData[0], userData[1]);
 			response = (u != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+			*/
 		} catch (Exception e) {
 			logger.error(e.toString());
 			u = null;
