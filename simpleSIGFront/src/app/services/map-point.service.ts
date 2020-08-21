@@ -18,15 +18,13 @@ export class MapPointService {
       
       this.http.get(`${this.url}/getall`).toPromise()
       .then(
-        res => {
+        res => {          
           resolve(res);
         },
         err => {
           reject(err);
         }
       );  
-        
-     resolve(true);
     });
 
     return promise;

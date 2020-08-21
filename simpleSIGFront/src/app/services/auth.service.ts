@@ -34,9 +34,7 @@ export class AuthService {
         err => {
           reject(err);
         }
-      );  
-        
-     resolve(true);
+      );    
     });
 
     return promise;

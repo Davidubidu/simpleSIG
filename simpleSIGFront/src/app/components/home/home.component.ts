@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
 
   logedUser: string;
   isLogged: boolean;
-  mapPointsList: Array<any>;
+  mapPointsList = [];
 
   ngOnInit(): void {
 
