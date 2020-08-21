@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,6 +53,7 @@ public class UserRestController {
 	}
 	
 	@GetMapping(value= "/getall")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<User>> getAll() {
 		logger.info("retrieving all users");
 		return serv.listUsers();
@@ -64,6 +66,7 @@ public class UserRestController {
 	}
 	
 	@PutMapping(value= "/update/{User-id}")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<User> update(@PathVariable(value="User-id") String id, @RequestBody User u) {
 		logger.info("Updating user "+ id +"...");
 		u.setId(id);
@@ -72,6 +75,7 @@ public class UserRestController {
 	}
 	
 	@DeleteMapping(value= "/deleteuser/{User-id}")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<String> delete(@PathVariable(value= "User-id") String id) {
 		logger.info("Deleting user with id: "+ id +"...");
 		return serv.deleteUser(id);

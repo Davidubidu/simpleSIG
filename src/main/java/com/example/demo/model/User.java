@@ -21,13 +21,13 @@ public class User {
 	@Size(max = 25)
 	private String userName;
 	@NotBlank
-  @Size(max = 50)
-  @Email
-  private String email;
+	@Size(max = 50)
+	@Email
+	private String email;
 	@DBRef
-  private Set<Role> roles = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	@NotBlank
-  @Size(max = 120)
+ 	@Size(max = 120)
 	private String password;
 	
 	public User() {
@@ -35,7 +35,7 @@ public class User {
 	}
 
 	public User(String username, String email, String password) {
-    this.username = username;
+    this.userName = username;
     this.email = email;
     this.password = password;
   }
@@ -48,12 +48,12 @@ public class User {
     this.id = id;
   }
 
-  public String getUsername() {
-    return username;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String username) {
+    this.userName = username;
   }
 
   public String getEmail() {
