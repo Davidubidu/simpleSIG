@@ -17,4 +17,5 @@ public interface MapPointDAO extends MongoRepository<MapPoint, String> {
 	Optional<MapPoint> findMapPointByxCoordinateAndYCoordinateAndHeightAndTypeIgnoreCase(int xCoordinate, int yCoordinate, int height, String type);
 	//Optional<List<MapPoint>> findByxCoordinateAndYCoordinateAndHeightAndTypeIgnoreCase(int xCoordinate, int yCoordinate, int height, String type);
 	//Optional<List<MapPoint>> findByType(String type);
+	List<MapPoint> findMapPointByOwnername(String ownername);
 }
