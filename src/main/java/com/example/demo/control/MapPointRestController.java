@@ -25,7 +25,7 @@ import com.example.demo.service.MapPointServiceImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value= "/api/MapPoints")
+@RequestMapping(value= "/api/mappoints")
 @Component
 public class MapPointRestController {
 	
@@ -33,7 +33,7 @@ public class MapPointRestController {
 	MapPointServiceImpl serv;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@PostMapping(value= "/Insert")
+	@PostMapping(value= "/insert")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<MapPoint> insert(@RequestBody MapPoint mp) {
 		logger.info("saving map point...");
