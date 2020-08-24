@@ -104,4 +104,19 @@ public class MapPointServiceImpl implements MapPointService {
 		return new ResponseEntity<List<MapPoint>>(points, response);
 	}
 
+	@Override
+	public ResponseEntity<List<MapPoint>> listUserMapPoints(String ownername) {
+		HttpStatus response;
+		List<MapPoint> points;
+		try {
+			points = dao.findMapPointByOwnername(ownername);
+			response = HttpStatus.OK; //200
+		}	catch(Exception e) {
+			logger.error(e.toString());
+			points = new ArrayList<MapPoint>();
+			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
+		}
+		return new ResponseEntity<List<MapPoint>>(points, response);
+	}
+
 }
