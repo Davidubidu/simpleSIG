@@ -47,6 +47,13 @@ public class MapPointRestController {
         return serv.listMapPoints();
 	}
 	
+	@GetMapping(value= "/getownedmappoints")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<List<MapPoint>> getOwned() {
+		logger.info("getting the map points you own...");
+		return serv.listOwnedMapPoints();
+	}
+	
 	@GetMapping(value= "/get/{MapPoint-id}")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<Optional<MapPoint>> getById(@PathVariable(value= "MapPoint-id") String id) {
@@ -55,7 +62,7 @@ public class MapPointRestController {
 	}
 	
 	@GetMapping(value= "/getownerpoints/{MapPoint-ownername}")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<List<MapPoint>> getByOwner(@PathVariable(value= "MapPoint-ownername") String ownername) {
 		logger.info("getting the map points belonging to "+ownername+"...");
 		return serv.listUserMapPoints(ownername);

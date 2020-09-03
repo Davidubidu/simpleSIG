@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MapPointDAO;
 import com.example.demo.model.MapPoint;
+import com.example.demo.security.services.UserDetailsImpl;
 
 @Service
 @Component
@@ -50,6 +52,7 @@ public class MapPointServiceImpl implements MapPointService {
 	public ResponseEntity<MapPoint> updateMapPoint(MapPoint mappoint) {
 		HttpStatus response;
 		try {
+			logger.info("map point updated:");
 			dao.save(mappoint);
 			response = HttpStatus.OK; //200
 		} catch (Exception e) {
@@ -64,6 +67,7 @@ public class MapPointServiceImpl implements MapPointService {
 		HttpStatus response;
 		Optional<MapPoint> m;
 		try {
+			logger.info("map point found:");
 			m = dao.findById(id);
 			response = HttpStatus.OK; //200
 		} catch (Exception e) {
@@ -94,9 +98,30 @@ public class MapPointServiceImpl implements MapPointService {
 		HttpStatus response;
 		List<MapPoint> points;
 		try {
+			logger.info("here they are:");
 			points = dao.findAll();
 			response = HttpStatus.OK; //200
 		}	catch (Exception e) {
+			logger.error(e.toString());
+			points = new ArrayList<MapPoint>();
+			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
+		}
+		return new ResponseEntity<List<MapPoint>>(points, response);
+	}
+
+	@Override
+	public ResponseEntity<List<MapPoint>> listOwnedMapPoints() {
+		HttpStatus response;
+		List<MapPoint> points;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+		String ownername = userDetails.getUsername();
+		try {
+			logger.info("here they are:");
+			points = dao.findMapPointByOwnername(ownername);
+			response = HttpStatus.OK; //200
+			
+		}	catch(Exception e) {
 			logger.error(e.toString());
 			points = new ArrayList<MapPoint>();
 			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
@@ -109,8 +134,10 @@ public class MapPointServiceImpl implements MapPointService {
 		HttpStatus response;
 		List<MapPoint> points;
 		try {
+			logger.info("here they are:");
 			points = dao.findMapPointByOwnername(ownername);
 			response = HttpStatus.OK; //200
+			
 		}	catch(Exception e) {
 			logger.error(e.toString());
 			points = new ArrayList<MapPoint>();
