@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import com.example.demo.security.services.UserDetailsImpl;
 public class MapPointServiceImpl implements MapPointService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	
 	@Autowired 
 	MapPointDAO dao;
@@ -51,10 +54,18 @@ public class MapPointServiceImpl implements MapPointService {
 	@Override
 	public ResponseEntity<MapPoint> updateMapPoint(MapPoint mappoint) {
 		HttpStatus response;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+	            .getPrincipal();
 		try {
-			logger.info("map point updated:");
+			if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD") ||
+					mappoint.getownername() == userDetails.getUsername()) {	
+			logger.info("map point"+ mappoint.getType() +"updated:");
 			dao.save(mappoint);
 			response = HttpStatus.OK; //200
+			} else {
+				logger.info("you are not the owner of this map point and you dont have the authorities to update it");
+				response = HttpStatus.FORBIDDEN; // 403
+			}
 		} catch (Exception e) {
 			logger.error(e.toString());
 			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
@@ -82,15 +93,28 @@ public class MapPointServiceImpl implements MapPointService {
 	@Override
 	public ResponseEntity<String> deleteMapPointById(String id) {
 		HttpStatus response;
+		String msg;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+	            .getPrincipal();
+		Optional<MapPoint> m = dao.findById(id);
 		try {
-			dao.deleteById(id);
-			logger.info("map point deleted");
-			response = HttpStatus.OK; //200
+			if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD") ||
+					m.get().getownername() == userDetails.getUsername()) {	
+				dao.deleteById(id);
+				logger.info("map point deleted");
+				response = HttpStatus.OK; //200
+				msg = "map point deleted correctky";
+			} else {
+				logger.info("you are not the owner of this map point and dont have the authorities to delete it");
+				response = HttpStatus.FORBIDDEN; // 403
+				msg = "unauthorized";
+			}
 		}	catch(Exception e) {
 			logger.error(e.toString());
 			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
+			msg = "an error happened";
 		}
-		return new ResponseEntity<String>("map point deleted correctly", response);
+		return new ResponseEntity<String>(msg, response);
 	}
 
 	@Override
@@ -114,7 +138,7 @@ public class MapPointServiceImpl implements MapPointService {
 		HttpStatus response;
 		List<MapPoint> points;
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+	            .getPrincipal();
 		String ownername = userDetails.getUsername();
 		try {
 			logger.info("here they are:");
@@ -133,10 +157,19 @@ public class MapPointServiceImpl implements MapPointService {
 	public ResponseEntity<List<MapPoint>> listUserMapPoints(String ownername) {
 		HttpStatus response;
 		List<MapPoint> points;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+	            .getPrincipal();
 		try {
-			logger.info("here they are:");
-			points = dao.findMapPointByOwnername(ownername);
-			response = HttpStatus.OK; //200
+			if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD")
+					|| ownername == userDetails.getUsername()) {				
+				logger.info("here they are:");
+				points = dao.findMapPointByOwnername(ownername);
+				response = HttpStatus.OK; //200
+			} else {
+				logger.info("here they are:");
+				points = dao.findMapPointByOwnernameAndVisible(ownername, true);
+				response = HttpStatus.OK; //200
+			}
 			
 		}	catch(Exception e) {
 			logger.error(e.toString());
