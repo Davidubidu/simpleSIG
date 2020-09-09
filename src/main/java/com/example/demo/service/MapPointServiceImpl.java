@@ -58,7 +58,7 @@ public class MapPointServiceImpl implements MapPointService {
 	            .getPrincipal();
 		try {
 			if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD") ||
-					mappoint.getownername() == userDetails.getUsername()) {	
+					mappoint.getownername().equals(userDetails.getUsername())) {	
 			logger.info("map point"+ mappoint.getType() +"updated:");
 			dao.save(mappoint);
 			response = HttpStatus.OK; //200
@@ -99,7 +99,7 @@ public class MapPointServiceImpl implements MapPointService {
 		Optional<MapPoint> m = dao.findById(id);
 		try {
 			if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD") ||
-					m.get().getownername() == userDetails.getUsername()) {	
+					m.get().getownername().equals(userDetails.getUsername())) {	
 				dao.deleteById(id);
 				logger.info("map point deleted");
 				response = HttpStatus.OK; //200
