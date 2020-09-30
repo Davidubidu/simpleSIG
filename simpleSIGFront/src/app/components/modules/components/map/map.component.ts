@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Map}  from 'ol/Map';
-import { OSM } from 'ol/source/OSM';
-import { TileLayer } from 'ol/layer/Tile';
-import { View } from 'ol/View';
+
+import Map from 'ol/Map';
+import View from 'ol/View';
+import OSM from 'ol/source/OSM';
+import TileLayer from 'ol/layer/Tile';
 
 @Component({
   selector: 'app-mod-map',

@@ -1,6 +1,5 @@
-import { Components } from './components';
 import { NgModule } from '@angular/core';
-
+import { Components } from './components';
 
 @NgModule({
   declarations: [
