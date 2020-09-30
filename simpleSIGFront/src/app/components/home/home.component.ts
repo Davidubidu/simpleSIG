@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   logedUser: string;
   isLogged: boolean;
   mapPointsList = [];
+  dataMap: any;
 
   ngOnInit(): void {
 
@@ -23,9 +24,16 @@ export class HomeComponent implements OnInit {
       this.logedUser = this.auth.getUserInfo().username;
     });
 
-    this.mapPoint.getMapPoints().then((mapPoints) => {
-      this.mapPointsList = mapPoints;
+    this.mapPoint.getMapPoints().then((mapPoints, err) => {
+
+      if(err) {
+        console.error(err);
+      } else {
+        this.mapPointsList = mapPoints;
+      }
     });
+
+    this.dataMap = { x: 0, y: 0, zoom: 2 };
     
   }
 

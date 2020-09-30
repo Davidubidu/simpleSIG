@@ -16,4 +16,6 @@ public interface MapPointService {
 	ResponseEntity<Optional<MapPoint>> getMapPointById(String id);
 	ResponseEntity<String> deleteMapPointById(String id);
 	public ResponseEntity<List<MapPoint>> listMapPoints();
+	public ResponseEntity<List<MapPoint>> listUserMapPoints(String ownername);
+	public ResponseEntity<List<MapPoint>> listOwnedMapPoints();
 }

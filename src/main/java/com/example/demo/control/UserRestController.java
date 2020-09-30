@@ -24,7 +24,7 @@ import com.example.demo.model.User;
 import com.example.demo.service.UserServiceImpl;
 
 @RestController
-@RequestMapping(value= "/api/Users")
+@RequestMapping(value= "/api/users")
 @Component
 public class UserRestController {
 	

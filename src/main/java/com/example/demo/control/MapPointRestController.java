@@ -25,7 +25,7 @@ import com.example.demo.service.MapPointServiceImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value= "/api/MapPoints")
+@RequestMapping(value= "/api/mappoints")
 @Component
 public class MapPointRestController {
 	
@@ -33,7 +33,7 @@ public class MapPointRestController {
 	MapPointServiceImpl serv;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@PostMapping(value= "/Insert")
+	@PostMapping(value= "/insert")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<MapPoint> insert(@RequestBody MapPoint mp) {
 		logger.info("saving map point...");
@@ -47,6 +47,13 @@ public class MapPointRestController {
         return serv.listMapPoints();
 	}
 	
+	@GetMapping(value= "/getownedmappoints")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<List<MapPoint>> getOwned() {
+		logger.info("getting the map points you own...");
+		return serv.listOwnedMapPoints();
+	}
+	
 	@GetMapping(value= "/get/{MapPoint-id}")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<Optional<MapPoint>> getById(@PathVariable(value= "MapPoint-id") String id) {
@@ -54,12 +61,18 @@ public class MapPointRestController {
 		return serv.getMapPointById(id);
 	}
 	
+	@GetMapping(value= "/getownerpoints/{MapPoint-ownername}")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<List<MapPoint>> getByOwner(@PathVariable(value= "MapPoint-ownername") String ownername) {
+		logger.info("getting the map points belonging to "+ownername+"...");
+		return serv.listUserMapPoints(ownername);
+	}
+	
 	@PutMapping(value= "/update/{MapPoint-id}")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<MapPoint> update(@PathVariable(value= "MapPoint-id") String id, @RequestBody MapPoint mp) {
         logger.info("Updating map point "+ id +"...");
         mp.setId(id); 
-        logger.info("map point "+ id +" updated");
         return serv.updateMapPoint(mp);
     }
 	
