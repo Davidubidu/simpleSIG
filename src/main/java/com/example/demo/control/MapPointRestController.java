@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.MapPoint;
@@ -88,7 +90,7 @@ public class MapPointRestController {
 
 	@PostMapping(value= "/getFiltered")
         //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<MapPoint>> getFiltered(@RequestBody String filter) {
+    public ResponseEntity<List<MapPoint>> getFiltered(@RequestParam(value = "filter", required = false) String filter) {
 	try {
 
             // convert JSON string to Map
