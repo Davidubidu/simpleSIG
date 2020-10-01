@@ -3,6 +3,7 @@ package com.example.demo.control;
 import java.util.List;
 import java.util.Optional;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.util.Map;
 
@@ -102,7 +103,7 @@ public class MapPointRestController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Updating map point "+ id +"...");
+        logger.info("Updating map point ...");
         //mp.setId(id); 
         return serv.listMapPoints();
     }
