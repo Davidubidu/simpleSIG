@@ -2,7 +2,9 @@ package com.example.demo.control;
 
 import java.util.List;
 import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +83,28 @@ public class MapPointRestController {
     public ResponseEntity<String> delete(@PathVariable(value= "MapPoint-id") String id) {
         logger.info("Deleting map point with map point-id "+ id +"...");       
         return serv.deleteMapPointById(id);
+    }
+
+	@PostMapping(value= "/getFiltered")
+        //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<MapPoint>> getFiltered(@RequestBody String filter) {
+	try {
+
+            // convert JSON string to Map
+            //Map<String, String> map = mapper.readValue(filter, Map.class);
+	    ObjectMapper mapper = new ObjectMapper();
+	    List<Map<String, String[]>> data = mapper.readValue(filter, new TypeReference<List<Map<String, String[]>>>(){});
+			// it works
+            //Map<String, String> map = mapper.readValue(json, new TypeReference<Map<String, String>>() {});
+
+            System.out.println(data);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.info("Updating map point "+ id +"...");
+        //mp.setId(id); 
+        return serv.listMapPoints();
     }
 	
 	
