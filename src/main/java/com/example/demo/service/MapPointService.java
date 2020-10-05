@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -18,4 +19,5 @@ public interface MapPointService {
 	public ResponseEntity<List<MapPoint>> listMapPoints();
 	public ResponseEntity<List<MapPoint>> listUserMapPoints(String ownername);
 	public ResponseEntity<List<MapPoint>> listOwnedMapPoints();
+	public ResponseEntity<List<MapPoint>> getMapPointsByParams(Map<String, String[]> data);
 }

@@ -88,26 +88,26 @@ public class MapPointRestController {
         return serv.deleteMapPointById(id);
     }
 
-	@PostMapping(value= "/getFiltered")
-        //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@GetMapping(value= "/getfiltered")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<List<MapPoint>> getFiltered(@RequestParam(value = "filter", required = false) String filter) {
-	try {
-
-            // convert JSON string to Map
-            //Map<String, String> map = mapper.readValue(filter, Map.class);
-	    ObjectMapper mapper = new ObjectMapper();
-	    List<Map<String, String[]>> data = mapper.readValue(filter, new TypeReference<List<Map<String, String[]>>>(){});
-			// it works
-            //Map<String, String> map = mapper.readValue(json, new TypeReference<Map<String, String>>() {});
-
-            System.out.println(data);
-
+		/**
+		Map<String, String[]> data = null;
+		
+		try {
+			if( filter != null ) {
+				// convert JSON string to Map
+				ObjectMapper mapper = new ObjectMapper();
+				data = mapper.readValue(filter, new TypeReference<Map<String, String[]>>(){});
+			}
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Updating map point ...");
+        */
+		
+        logger.info("getting map points ...");
         //mp.setId(id); 
-        return serv.listMapPoints();
+        return serv.findMapPointsByParms(filter);
     }
 	
 	

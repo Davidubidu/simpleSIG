@@ -19,4 +19,14 @@ public interface MapPointDAO extends MongoRepository<MapPoint, String> {
 	//Optional<List<MapPoint>> findByType(String type);
 	List<MapPoint> findMapPointByOwnername(String ownername);
 	List<MapPoint> findMapPointByOwnernameAndVisible(String ownername, boolean isVisible);
+	@Query("{'xCoordinate': ?0, 'yCoordinate': ?1, 'height':?2, 'type': ?3, 'description' : ?4, 'ownername':?5, 'visible': ?6}")
+	List<MapPoint> findMapPointByxCoordinateInAndYCoordinateInAndHeightInAndTypeInAndDescriptionInAndOwnernameInAndIsVisibleIn(
+			int[] xCoordinate,
+			int[] yCoordinate,
+			int[] height,
+			String[] type,
+			String[] description,
+			String[] ownername,
+			Boolean[] isVisible);
+	
 }
