@@ -88,7 +88,7 @@ public class MapPointRestController {
         return serv.deleteMapPointById(id);
     }
 
-	@GetMapping(value= "/getfiltered")
+	@GetMapping(value= "/auxfilter")
     //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<List<MapPoint>> getFiltered(@RequestParam(value = "filter", required = false) String filter) {
 		/**
@@ -108,6 +108,28 @@ public class MapPointRestController {
         logger.info("getting map points ...");
         //mp.setId(id); 
         return serv.findMapPointsByParms(filter);
+    }
+	
+	@GetMapping(value= "/getfiltered")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<MapPoint>> auxFilter(@RequestParam(value = "filter", required = false) String filter) {
+		
+		Map<String, String[]> data = null;
+		
+		try {
+			if( filter != null ) {
+				// convert JSON string to Map
+				ObjectMapper mapper = new ObjectMapper();
+				data = mapper.readValue(filter, new TypeReference<Map<String, String[]>>(){});
+			}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+		
+        logger.info("getting map points ...");
+        //mp.setId(id); 
+        return serv.getMapPointsByParams(data);
     }
 	
 	

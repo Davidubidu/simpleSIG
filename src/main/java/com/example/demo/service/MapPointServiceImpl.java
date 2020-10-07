@@ -65,7 +65,7 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		return new ResponseEntity<List<MapPoint>>( points, response);
 	}
 	
-	@Deprecated
+	
 	@Override
 	public ResponseEntity<List<MapPoint>> getMapPointsByParams(Map<String, String[]> data) {
 		HttpStatus response;
@@ -86,14 +86,14 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		
 		if (check) {
 			
-			x = (data.get("xCoordinate") != null) ? Arrays.stream(data.get("xCoordinate")).mapToInt(Integer::parseInt).toArray() : null;
-			if (x!=null) criteria.add(Criteria.where("xCoordinate").in(Arrays.asList(x)));
+			x = (data.get("xCoordinate") != null) ? Arrays.stream(data.get("xCoordinate")).mapToInt(Integer::parseInt).toArray() : null;			
+			if (x != null) criteria.add(Criteria.where("xCoordinate").in(Arrays.asList(intToInt(x))));
 			
 			y = (data.get("yCoordinate") != null) ? Arrays.stream(data.get("yCoordinate")).mapToInt(Integer::parseInt).toArray() : null;
-			if (y!=null) criteria.add(Criteria.where("yCoordinate").in(Arrays.asList(y)));
+			if (y != null) criteria.add(Criteria.where("yCoordinate").in(Arrays.asList(intToInt(y))));
 			
 			h = (data.get("height") != null) ? Arrays.stream(data.get("height")).mapToInt(Integer::parseInt).toArray() : null;
-			if (h!=null) criteria.add(Criteria.where("height").in(Arrays.asList(h)));
+			if (h != null) criteria.add(Criteria.where("height").in(Arrays.asList(intToInt(h))));
 			
 			type = (data.get("type") != null) ? data.get("type") : null;
 			if (type!=null) criteria.add(Criteria.where("type").in(Arrays.asList(type)));
@@ -110,17 +110,11 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		}
 		
 		
-		Boolean checkOwner = (data.get("ownername") != null) ? data.get("ownername").toString() == userDetails.getUsername() : false;
+		Boolean checkOwner = (data.get("ownername") != null) ? data.get("ownername").toString().equals(userDetails.getUsername()) : false;
 		
 		if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD")
 				|| checkOwner) {					
-			logger.info("here are the map points with the parameters you asked for with params:" + x.toString()
-			+ y.toString()
-			+ h.toString()
-			+ type.toString()
-			+ description.toString()
-			+ ownername.toString()
-			+ isVisible.toString());
+			
 			/**
 			criteria.add(Criteria.where("visible").in(Arrays.asList(isVisible)));
 			
@@ -136,13 +130,7 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 			points = mongoTemplate.find(query, MapPoint.class);
 			response = HttpStatus.OK; //200
 		} else {
-			logger.info("here are the map points with the parameters you asked for with params:" + x.toString()
-			+ y.toString()
-			+ h.toString()
-			+ type.toString()
-			+ description.toString()
-			+ ownername.toString()
-			+ "and isVisible = true.");				
+						
 			
 			criteria.add(Criteria.where("visible").is(new Boolean[] {true}));
 			
@@ -307,7 +295,17 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		return new ResponseEntity<List<MapPoint>>(points, response);
 	}
 
-	
+	private final Integer[] intToInt(int[] num) {
+		
+		Integer[] n = new Integer[num.length];
+		
+		for (int i = 0; i < num.length; i++){
+			n[i] = new Integer(num[i]);
+			logger.info(n[i].toString());
+		}	
+		
+		return n;
+	}
 
 	
 	
