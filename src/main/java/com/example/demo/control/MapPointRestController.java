@@ -2,7 +2,10 @@ package com.example.demo.control;
 
 import java.util.List;
 import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.io.IOException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.MapPoint;
@@ -81,6 +86,50 @@ public class MapPointRestController {
     public ResponseEntity<String> delete(@PathVariable(value= "MapPoint-id") String id) {
         logger.info("Deleting map point with map point-id "+ id +"...");       
         return serv.deleteMapPointById(id);
+    }
+
+	@GetMapping(value= "/auxfilter")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<MapPoint>> getFiltered(@RequestParam(value = "filter", required = false) String filter) {
+		/**
+		Map<String, String[]> data = null;
+		
+		try {
+			if( filter != null ) {
+				// convert JSON string to Map
+				ObjectMapper mapper = new ObjectMapper();
+				data = mapper.readValue(filter, new TypeReference<Map<String, String[]>>(){});
+			}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
+		
+        logger.info("getting map points ...");
+        //mp.setId(id); 
+        return serv.findMapPointsByParms(filter);
+    }
+	
+	@GetMapping(value= "/getfiltered")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<MapPoint>> auxFilter(@RequestParam(value = "filter", required = false) String filter) {
+		
+		Map<String, String[]> data = null;
+		
+		try {
+			if( filter != null ) {
+				// convert JSON string to Map
+				ObjectMapper mapper = new ObjectMapper();
+				data = mapper.readValue(filter, new TypeReference<Map<String, String[]>>(){});
+			}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+		
+        logger.info("getting map points ...");
+        //mp.setId(id); 
+        return serv.getMapPointsByParams(data);
     }
 	
 	

@@ -1,14 +1,20 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-
+import org.omg.CORBA.Any;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,20 +22,130 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dao.DynamicQuery;
 import com.example.demo.dao.MapPointDAO;
+import com.example.demo.dao.MapPointRepositoryCustom;
 import com.example.demo.model.MapPoint;
 import com.example.demo.security.services.UserDetailsImpl;
 
 @Service
 @Component
-public class MapPointServiceImpl implements MapPointService {
+public class MapPointServiceImpl implements MapPointService, MapPointRepositoryCustom {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	private final MongoTemplate mongoTemplate;
+	
+	@Autowired
+	public MapPointServiceImpl(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
+	}
 	
 	@Autowired 
 	MapPointDAO dao;
+	
+	@Override
+	public ResponseEntity<List<MapPoint>> findMapPointsByParms(String filter) {
+		HttpStatus response;
+		List<MapPoint> points;
+		
+		final BasicQuery query = new BasicQuery(filter);
+				
+		try {
+			
+			points = mongoTemplate.find(query, MapPoint.class);				
+			response = HttpStatus.OK; //200
+			
+		}	catch(Exception e) {
+			logger.error(e.toString());
+			points = new ArrayList<MapPoint>();
+			response = HttpStatus.INTERNAL_SERVER_ERROR; //500
+		}
+		
+		return new ResponseEntity<List<MapPoint>>( points, response);
+	}
+	
+	
+	@Override
+	public ResponseEntity<List<MapPoint>> getMapPointsByParams(Map<String, String[]> data) {
+		HttpStatus response;
+		List<MapPoint> points;
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+	            .getPrincipal();
+		final Query query = new Query();
+		final List<Criteria> criteria = new ArrayList<>();
+		
+		Boolean check = ( data != null ) ? true : false;
+		int x[] = {};
+		int y[] = {};
+		int h[] = {};
+		String[] type = null;
+		String[] description = null;
+		String[] ownername = null;
+		Boolean[] isVisible = {};
+		
+		if (check) {
+			
+			x = (data.get("xCoordinate") != null) ? Arrays.stream(data.get("xCoordinate")).mapToInt(Integer::parseInt).toArray() : null;			
+			if (x != null) criteria.add(Criteria.where("xCoordinate").in(Arrays.asList(intToInt(x))));
+			
+			y = (data.get("yCoordinate") != null) ? Arrays.stream(data.get("yCoordinate")).mapToInt(Integer::parseInt).toArray() : null;
+			if (y != null) criteria.add(Criteria.where("yCoordinate").in(Arrays.asList(intToInt(y))));
+			
+			h = (data.get("height") != null) ? Arrays.stream(data.get("height")).mapToInt(Integer::parseInt).toArray() : null;
+			if (h != null) criteria.add(Criteria.where("height").in(Arrays.asList(intToInt(h))));
+			
+			type = (data.get("type") != null) ? data.get("type") : null;
+			if (type!=null) criteria.add(Criteria.where("type").in(Arrays.asList(type)));
+			
+			description =  (data.get("description") != null) ? data.get("description") : null;
+			if (description!=null) criteria.add(Criteria.where("description").in(Arrays.asList(description)));
+			
+			ownername = (data.get("ownername") != null) ? data.get("ownername"): null;
+			if (ownername!=null) criteria.add(Criteria.where("ownername").in(Arrays.asList(ownername)));
+			
+			isVisible = (data.get("isVisible") != null) ? Arrays.stream(data.get("isVisible")).map(Boolean::parseBoolean).toArray(Boolean[]::new) : new Boolean[] {false};
+			
+			
+		}
+		
+		
+		Boolean checkOwner = (data.get("ownername") != null) ? data.get("ownername").toString().equals(userDetails.getUsername()) : false;
+		
+		if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD")
+				|| checkOwner) {					
+			
+			/**
+			criteria.add(Criteria.where("visible").in(Arrays.asList(isVisible)));
+			
+			the addition of criteria to the query is done here because until the checking of the authorization/ownership the value of the isVisible param is not
+			 representative of the user's access to the map points  
+			*/ 
+			
+			if(!criteria.isEmpty()) {
+				query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+			}
+			
+			logger.info("query: " + query.toString());
+			points = mongoTemplate.find(query, MapPoint.class);
+			response = HttpStatus.OK; //200
+		} else {
+						
+			
+			criteria.add(Criteria.where("visible").is(new Boolean[] {true}));
+			
+			if(!criteria.isEmpty()) {
+				query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+			}
+			
+			points = mongoTemplate.find(query, MapPoint.class);				
+			response = HttpStatus.OK; //200
+		}
+		
+		return new ResponseEntity<List<MapPoint>>(points, response);
+	}
 
+	
 	@Override
 	public ResponseEntity<MapPoint> saveMapPoint(MapPoint mappoint) {
 		HttpStatus response;
@@ -179,4 +295,18 @@ public class MapPointServiceImpl implements MapPointService {
 		return new ResponseEntity<List<MapPoint>>(points, response);
 	}
 
+	private final Integer[] intToInt(int[] num) {
+		
+		Integer[] n = new Integer[num.length];
+		
+		for (int i = 0; i < num.length; i++){
+			n[i] = new Integer(num[i]);
+			logger.info(n[i].toString());
+		}	
+		
+		return n;
+	}
+
+	
+	
 }
