@@ -66,6 +66,7 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 	}
 	
 	
+	
 	@Override
 	public ResponseEntity<List<MapPoint>> getMapPointsByParams(Map<String, String[]> data) {
 		HttpStatus response;
@@ -79,8 +80,8 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		int x[] = {};
 		int y[] = {};
 		int h[] = {};
-		String[] type = null;
-		String[] description = null;
+		String[] types = null;
+		String[] descriptions = null;
 		String[] ownername = null;
 		Boolean[] isVisible = {};
 		
@@ -95,11 +96,12 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 			h = (data.get("height") != null) ? Arrays.stream(data.get("height")).mapToInt(Integer::parseInt).toArray() : null;
 			if (h != null) criteria.add(Criteria.where("height").in(Arrays.asList(intToInt(h))));
 			
-			type = (data.get("type") != null) ? data.get("type") : null;
-			if (type!=null) criteria.add(Criteria.where("type").in(Arrays.asList(type)));
+			types = (data.get("type") != null) ? data.get("type") : null;
+			if (types!=null) criteria.add(Criteria.where("type").in(Arrays.asList(types)));
 			
-			description =  (data.get("description") != null) ? data.get("description") : null;
-			if (description!=null) criteria.add(Criteria.where("description").in(Arrays.asList(description)));
+			descriptions =  (data.get("description") != null) ? data.get("description") : null;
+			//if (descriptions!=null) criteria.add(Criteria.where("description").in(Arrays.asList(descriptions)));
+			if (descriptions!=null) Arrays.asList(descriptions).forEach((description) -> criteria.add(Criteria.where("description").regex(description)));
 			
 			ownername = (data.get("ownername") != null) ? data.get("ownername"): null;
 			if (ownername!=null) criteria.add(Criteria.where("ownername").in(Arrays.asList(ownername)));
