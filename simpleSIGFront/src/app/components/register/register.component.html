@@ -4,18 +4,18 @@
       </div>
         <div class="col-md-6 login-form-1">
             <h3>REGISTER</h3>
-            <form>
+            <form [formGroup]="authForm">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Your username *" value="" />
+                    <input type="text" class="form-control" placeholder="Your username *" formControlName="username" value="" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Your Email *" value="" />
+                    <input type="email" class="form-control" placeholder="Your Email *" formControlName="password" value="" />
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Your Password *" value="" />
+                    <input type="password" class="form-control" placeholder="Your Password *" formControlName="email" value="" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="Register" />
+                    <input type="submit" class="btnSubmit" value="Register" (click)="tryRegister()"/>
                 </div>
             </form>
         </div>

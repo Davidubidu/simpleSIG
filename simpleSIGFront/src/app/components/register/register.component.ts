@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -7,9 +10,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor() { }
+  failed = false;
+
+  constructor( private auth: AuthService, private router: Router ) { }
 
   ngOnInit(): void {
+  }
+
+  authForm = new FormGroup({
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required),
+    email: new FormControl('', Validators.required)
+  });
+
+  public tryRegister() {
+    const username = this.authForm.get('username').value;
+    const password = this.authForm.get('password').value;
+    const email = this.authForm.get('email').value;
+    this.auth.register(username, password, email).then((user) => {
+      this.failed = false;
+      if (!this.failed) { this.router.navigate(['/app']); }
+    }).catch((err) => {
+      debugger;
+      this.failed = true;
+    });
   }
 
 }

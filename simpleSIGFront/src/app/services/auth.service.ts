@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 const SALT_ROUNDS = 10;
 
@@ -14,7 +13,7 @@ export class AuthService {
 
   url = environment.host;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   private authUser = new BehaviorSubject(false);
   public user = this.authUser.asObservable();
@@ -27,9 +26,11 @@ export class AuthService {
   public login(username: string, password: string): any {
     
     const promise = new Promise<any>((resolve, reject) => {
-      bcrypt.hash(password, SALT_ROUNDS, function(err, hash) {
-        if (err) console.error('Error hashing ' + err);
-        this.http.post(`${this.url}/api/auth/signin`, { username, password: hash }).toPromise()
+      // Restore when the backend accepts public user creations
+      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
+        //if (err) console.error('Error hashing ' + err);
+        //this.http.post(`${this.url}/api/auth/signin`, { username, password: hash }).toPromise()
+        this.http.post(`${this.url}/api/auth/signin`, { username, password }).toPromise()
         .then(
           res => {
             this.updateAuth(res);
@@ -39,7 +40,7 @@ export class AuthService {
             reject(err);
           }
         ); 
-      });   
+      //});   
     });
 
     return promise;
@@ -58,7 +59,7 @@ export class AuthService {
   public register(username: string, password: string, email: string) {
 
     const promise = new Promise<any>((resolve, reject) => {
-      bcrypt.hash(password, SALT_ROUNDS, function(err, hash) { 
+      bcrypt.hash(password, SALT_ROUNDS, (err, hash) => { 
         this.http.post(`${this.url}/api/auth/signup`, { username, password: hash, email, roles: ['user'] }).toPromise()
         .then(
           res => {
