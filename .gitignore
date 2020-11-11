@@ -37,3 +37,4 @@ src/main/resources/application.properties
 ### ANGULAR ###
 
 simpleSIGFront/package-lock.json
+simpleSIGFront/src/environments/*
