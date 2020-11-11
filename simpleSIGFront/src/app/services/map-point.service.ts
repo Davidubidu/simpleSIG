@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MapPointService {
 
-  url = environment.host + '/api/MapPoints';
+  url = environment.host + '/api/mappoints';
 
   constructor(private router: Router, private http: HttpClient) { }
 
