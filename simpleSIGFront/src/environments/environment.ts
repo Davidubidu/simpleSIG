@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  host: 'http://jarodieg-servers.top:8102'
+  host: ''
 };
 
 /*
