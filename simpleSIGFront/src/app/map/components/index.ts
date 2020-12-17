@@ -1,3 +1,3 @@
 import { MapComponent } from './map/map.component';
 
-export const Components = [ MapComponent ];
+export const Components = [MapComponent];

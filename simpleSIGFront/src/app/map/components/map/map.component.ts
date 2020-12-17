@@ -8,11 +8,11 @@ import TileLayer from 'ol/layer/Tile';
 @Component({
   selector: 'app-mod-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
   @Input() data: any;
-  constructor() { }
+  constructor() {}
 
   map: Map;
 
@@ -21,7 +21,8 @@ export class MapComponent implements OnInit {
       layers: [
         new TileLayer({
           source: new OSM(),
-        }) ],
+        }),
+      ],
       target: 'map',
       view: new View({
         center: [this.data.x, this.data.y],
@@ -30,17 +31,15 @@ export class MapComponent implements OnInit {
     });
   }
 
-  
   zoomOut() {
-    var view = this.map.getView();
-    var zoom = view.getZoom();
+    const view = this.map.getView();
+    const zoom = view.getZoom();
     view.setZoom(zoom - 1);
-  };
-  
-  zoomIn() {
-    var view = this.map.getView();
-    var zoom = view.getZoom();
-    view.setZoom(zoom + 1);
-  };
+  }
 
+  zoomIn() {
+    const view = this.map.getView();
+    const zoom = view.getZoom();
+    view.setZoom(zoom + 1);
+  }
 }

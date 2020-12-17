@@ -14,7 +14,39 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@interceptors": [
+        "src/app/interceptors"
+      ],
+      "@services": [
+        "src/app/services"
+      ],
+      "@admin": [
+        "src/app/admin"
+      ],
+      "@admin/*": [
+        "src/app/admin/*"
+      ],
+      "@auth": [
+        "src/app/auth"
+      ],
+      "@auth/*": [
+        "src/app/auth/*"
+      ],
+      "@map": [
+        "src/app/map"
+      ],
+      "@map/*": [
+        "src/app/map/*"
+      ],
+      "@settings": [
+        "src/app/settings"
+      ],
+      "@settings/*": [
+        "src/app/settings/*"
+      ],
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

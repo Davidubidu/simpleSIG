@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { MapPointService } from '../../services/map-point.service';
 
+import { AuthService, MapPointService } from '@services';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.css'],
 })
-export class HomeComponent implements OnInit {
-
-  constructor(private auth: AuthService, private mapPoint: MapPointService) { }
+export class MapComponent implements OnInit {
+  constructor(private auth: AuthService, private mapPoint: MapPointService) {}
 
   logedUser: string;
   isLogged: boolean;
@@ -18,15 +16,14 @@ export class HomeComponent implements OnInit {
   dataMap: any;
 
   ngOnInit(): void {
-
+    // FIXME: Change this to future User.store or similar
     this.auth.user.subscribe((logged) => {
       this.isLogged = logged;
       this.logedUser = this.auth.getUserInfo().username;
     });
 
     this.mapPoint.getMapPoints().then((mapPoints, err) => {
-
-      if(err) {
+      if (err) {
         console.error(err);
       } else {
         this.mapPointsList = mapPoints;
@@ -34,7 +31,5 @@ export class HomeComponent implements OnInit {
     });
 
     this.dataMap = { x: 0, y: 0, zoom: 2 };
-    
   }
-
 }
