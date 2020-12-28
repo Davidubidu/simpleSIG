@@ -83,7 +83,7 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		String[] types = null;
 		String[] descriptions = null;
 		String[] ownername = null;
-		Boolean[] isVisible = {};
+		Boolean[] visible = {};
 		
 		if (check) {
 			
@@ -106,8 +106,8 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 			ownername = (data.get("ownername") != null) ? data.get("ownername"): null;
 			if (ownername!=null) criteria.add(Criteria.where("ownername").in(Arrays.asList(ownername)));
 			
-			isVisible = (data.get("isVisible") != null) ? Arrays.stream(data.get("isVisible")).map(Boolean::parseBoolean).toArray(Boolean[]::new) : new Boolean[] {false};
-			
+			visible = (data.get("visible") != null) ? Arrays.stream(data.get("visible")).map(Boolean::parseBoolean).toArray(Boolean[]::new) : new Boolean[] {false};
+			if (visible!=null) criteria.add(Criteria.where("visible").in(Arrays.asList(visible)));
 			
 		}
 		
@@ -118,9 +118,9 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 				|| checkOwner) {					
 			
 			/**
-			criteria.add(Criteria.where("visible").in(Arrays.asList(isVisible)));
+			criteria.add(Criteria.where("visible").in(Arrays.asList(visible)));
 			
-			the addition of criteria to the query is done here because until the checking of the authorization/ownership the value of the isVisible param is not
+			the addition of criteria to the query is done here because until the checking of the authorization/ownership the value of the visible param is not
 			 representative of the user's access to the map points  
 			*/ 
 			
