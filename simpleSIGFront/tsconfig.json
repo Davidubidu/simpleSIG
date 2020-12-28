@@ -46,6 +46,12 @@
       "@settings/*": [
         "src/app/settings/*"
       ],
+      "@components": [
+        "src/app/components"
+      ],
+      "@components/*": [
+        "src/app/components/*"
+      ],
     }
   },
   "angularCompilerOptions": {
