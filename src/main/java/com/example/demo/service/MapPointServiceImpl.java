@@ -112,7 +112,7 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		}
 		
 		
-		Boolean checkOwner = (data.get("ownername") != null) ? data.get("ownername").toString().equals(userDetails.getUsername()) : false;
+		Boolean checkOwner = (check && data.get("ownername") != null) ? data.get("ownername").toString().equals(userDetails.getUsername()) : false;
 		
 		if (userDetails.getAuthorities().toString().contains("ROLE_ADMIN") || userDetails.getAuthorities().toString().contains("ROLE_MOD")
 				|| checkOwner) {					
