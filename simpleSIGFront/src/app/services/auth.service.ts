@@ -55,24 +55,24 @@ export class AuthService {
 
   public register(username: string, password: string, email: string) {
     const promise = new Promise<any>((resolve, reject) => {
-      bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
-        this.http
-          .post(`${this.url}/api/auth/register`, {
-            username,
-            password: hash,
-            email,
-            roles: ['user'],
-          })
-          .toPromise()
-          .then(
-            (res) => {
-              resolve(res);
-            },
-            (err) => {
-              reject(err);
-            }
-          );
-      });
+      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
+      this.http
+        .post(`${this.url}/api/auth/register`, {
+          username,
+          password,
+          email,
+          roles: ['user'],
+        })
+        .toPromise()
+        .then(
+          (res) => {
+            resolve(res);
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      //});
     });
 
     return promise;

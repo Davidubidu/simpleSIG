@@ -2,33 +2,34 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// Uncomment if we need to import something from the commented folders
+// import {} from '@services';
+import { AuthInterceptorProviders } from '@interceptors';
+import { AdminModule } from '@admin';
+import { AuthModule } from '@auth';
+import { MapModule } from '@map';
+import { SettingsModule } from '@settings';
+import { ComponentsModule } from '@components';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { HomeComponent } from './components/home/home.component';
-import { ModulesModule } from './components/modules';
-import { authInterceptorProviders } from './interceptors/jwt_interceptor';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    HomeComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ModulesModule
+    AdminModule,
+    AuthModule,
+    MapModule,
+    SettingsModule,
+    ComponentsModule,
+    BrowserAnimationsModule,
   ],
-  providers: [authInterceptorProviders],
-  bootstrap: [AppComponent]
+  providers: [AuthInterceptorProviders],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
