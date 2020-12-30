@@ -1,5 +1,6 @@
 package com.example.demo.control;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,10 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.User;
+import com.example.demo.payload.response.UserResponse;
 import com.example.demo.service.UserServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(value= "/api/users")
@@ -43,13 +48,22 @@ public class UserRestController {
 		return serv.saveUser(u);
 	}
 	
-	@PostMapping(value= "/login")
-	public ResponseEntity<Optional<User>> login(@RequestBody User u){
-		logger.info("trying to log in...");
-		//String encodedPassword = encoder.encode(u.getPassword());
-		//u.setPassword(encodedPassword);
-		String[] userData = {u.getUserName(), u.getPassword()};
-		return serv.login(userData);
+	@GetMapping(value= "/getfiltered")
+	public ResponseEntity<List<UserResponse>> getFiltered(@RequestParam(value = "filter", required = false) String filter){
+				
+		Map<String, String[]> data = null;
+		
+		try {
+			if( filter != null ) {
+				// convert JSON string to Map
+				ObjectMapper mapper = new ObjectMapper();
+				data = mapper.readValue(filter, new TypeReference<Map<String, String[]>>(){});
+			}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		logger.info("geting users...");
+		return serv.getFiltered(data);
 	}
 	
 	@GetMapping(value= "/getall")
@@ -60,9 +74,10 @@ public class UserRestController {
 	}
 
 	@PostMapping(value= "/getone")
-	public ResponseEntity<Optional<User>> getOne(@RequestBody Map<String, String[]> u) {
+	public ResponseEntity<List<UserResponse>> getOne(@RequestBody Map<String, String[]> u) {
 		logger.info("trying to log in...");
-		return serv.login(u.get("credentials"));
+		Map<String, String[]> a = null;
+		return serv.getFiltered(a);
 	}
 	
 	@PutMapping(value= "/update/{User-id}")

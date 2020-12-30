@@ -100,14 +100,13 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 			if (types!=null) criteria.add(Criteria.where("type").in(Arrays.asList(types)));
 			
 			descriptions =  (data.get("description") != null) ? data.get("description") : null;
-			//if (descriptions!=null) criteria.add(Criteria.where("description").in(Arrays.asList(descriptions)));
 			if (descriptions!=null) Arrays.asList(descriptions).forEach((description) -> criteria.add(Criteria.where("description").regex(description)));
 			
 			ownername = (data.get("ownername") != null) ? data.get("ownername"): null;
 			if (ownername!=null) criteria.add(Criteria.where("ownername").in(Arrays.asList(ownername)));
 			
 			visible = (data.get("visible") != null) ? Arrays.stream(data.get("visible")).map(Boolean::parseBoolean).toArray(Boolean[]::new) : new Boolean[] {false};
-			if (visible!=null) criteria.add(Criteria.where("visible").in(Arrays.asList(visible)));
+			//if (visible!=null) criteria.add(Criteria.where("visible").in(Arrays.asList(visible)));
 			
 		}
 		
@@ -134,12 +133,13 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 		} else {
 						
 			
-			criteria.add(Criteria.where("visible").is(new Boolean[] {true}));
+			criteria.add(Criteria.where("visible").in(Arrays.asList(new Boolean[] {true})));
 			
 			if(!criteria.isEmpty()) {
 				query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
 			}
 			
+			logger.info("query: " + query.toString());
 			points = mongoTemplate.find(query, MapPoint.class);				
 			response = HttpStatus.OK; //200
 		}
