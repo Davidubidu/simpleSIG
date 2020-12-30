@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService{
 		final Query query = new Query();
 		final List<Criteria> criteria = new ArrayList<>();
 		List<User> users = null;
-		List<UserResponse> usersResponse = null;
+		List<UserResponse> usersResponse = new ArrayList<>();
 		
 		Boolean check = ( data != null ) ? true : false;
 		String[] usernames;
@@ -136,10 +136,14 @@ public class UserServiceImpl implements UserService{
 		if (check) {
 			
 			usernames = (data.get("usernames") != null) ? data.get("usernames") : null;
-			if (usernames != null) Arrays.asList(usernames).forEach((username) -> criteria.add(Criteria.where("usernames").regex(username)));
+			//this for the regex search mode
+			//if (usernames != null) Arrays.asList(usernames).forEach((username) -> criteria.add(Criteria.where("userName").regex(username)));
+			if (usernames != null) criteria.add(Criteria.where("userName").in(Arrays.asList(usernames)));
 			
 			emails = (data.get("emails") != null) ? data.get("emails") : null;
-			if (emails != null) Arrays.asList(emails).forEach((email) -> criteria.add(Criteria.where("emails").regex(email)));
+			//dito
+			//if (emails != null) Arrays.asList(emails).forEach((email) -> criteria.add(Criteria.where("email").regex(email)));
+			if (emails != null) criteria.add(Criteria.where("email").in(Arrays.asList(emails)));
 			
 		}
 		
