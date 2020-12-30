@@ -7,13 +7,12 @@ import * as bcrypt from 'bcryptjs';
 const SALT_ROUNDS = 10;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   url = environment.host;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private authUser = new BehaviorSubject(false);
   public user = this.authUser.asObservable();
@@ -24,59 +23,65 @@ export class AuthService {
   }
 
   public login(username: string, password: string): any {
-    
     const promise = new Promise<any>((resolve, reject) => {
       // Restore when the backend accepts public user creations
-      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
-        //if (err) console.error('Error hashing ' + err);
-        //this.http.post(`${this.url}/api/auth/signin`, { username, password: hash }).toPromise()
-        this.http.post(`${this.url}/api/auth/signin`, { username, password }).toPromise()
+      // bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
+      // if (err) console.error('Error hashing ' + err);
+      // this.http.post(`${this.url}/api/auth/signin`, { username, password: hash }).toPromise()
+      this.http
+        .post(`${this.url}/api/auth/signin`, { username, password })
+        .toPromise()
         .then(
-          res => {
+          (res) => {
             this.updateAuth(res);
             resolve(res);
           },
-          err => {
+          (err) => {
             reject(err);
           }
-        ); 
-      //});   
+        );
+      // });
     });
 
     return promise;
-    
   }
 
   public logout(): any {
-
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
     this.authUser.next(false);
     return true;
-
   }
 
   public register(username: string, password: string, email: string) {
-
     const promise = new Promise<any>((resolve, reject) => {
-      bcrypt.hash(password, SALT_ROUNDS, (err, hash) => { 
-        this.http.post(`${this.url}/api/auth/signup`, { username, password: hash, email, roles: ['user'] }).toPromise()
+      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
+      this.http
+        .post(`${this.url}/api/auth/signup`, {
+          username,
+          password,
+          email,
+          roles: ['user'],
+        })
+        .toPromise()
         .then(
-          res => {
+          (res) => {
             resolve(res);
           },
-          err => {
+          (err) => {
             reject(err);
           }
         );
-      });
+      //});
     });
-    
+
     return promise;
   }
 
   private saveToken(user: any): boolean {
-    if (user.err) { return false; }
+    if (user.err) {
+      return false;
+    }
     localStorage.setItem('jwt', user.accessToken);
     localStorage.setItem('user', JSON.stringify(user));
     return true;
@@ -84,11 +89,11 @@ export class AuthService {
 
   public isIdentified() {
     const user = JSON.parse(localStorage.getItem('user'));
-    const loggedIn = (user && user.username) ? true : false;
+    const loggedIn = user && user.username ? true : false;
     this.authUser.next(loggedIn);
   }
 
-  public getUserInfo(){
+  public getUserInfo() {
     const user = JSON.parse(localStorage.getItem('user'));
     return user;
   }
