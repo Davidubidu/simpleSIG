@@ -100,7 +100,6 @@ public class MapPointServiceImpl implements MapPointService, MapPointRepositoryC
 			if (types!=null) criteria.add(Criteria.where("type").in(Arrays.asList(types)));
 			
 			descriptions =  (data.get("description") != null) ? data.get("description") : null;
-			//if (descriptions!=null) criteria.add(Criteria.where("description").in(Arrays.asList(descriptions)));
 			if (descriptions!=null) Arrays.asList(descriptions).forEach((description) -> criteria.add(Criteria.where("description").regex(description)));
 			
 			ownername = (data.get("ownername") != null) ? data.get("ownername"): null;
