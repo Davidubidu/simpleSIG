@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
 import { environment } from '../../environments/environment';
-import * as bcrypt from 'bcryptjs';
+
+import { UserStore } from '@stores';
+import { iUser } from '@models';
 
 const SALT_ROUNDS = 10;
 
@@ -12,50 +17,31 @@ const SALT_ROUNDS = 10;
 export class AuthService {
   url = environment.host;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userStore: Store<{ user: iUser }>
+  ) {}
 
-  private authUser = new BehaviorSubject(false);
-  public user = this.authUser.asObservable();
-
-  public updateAuth(user: any) {
-    const logged = this.saveToken(user);
-    this.authUser.next(logged);
+  public login(username: string, password: string): Observable<iUser> {
+    return this.http
+      .post(`${this.url}/api/auth/login`, { username, password })
+      .pipe(
+        tap((user) => this.updateAuth(user)),
+        map((user: any) => ({
+          logged: true,
+          username: user.username,
+          email: user.email,
+          roles: user.roles,
+        }))
+      );
   }
 
-  public login(username: string, password: string): any {
-    const promise = new Promise<any>((resolve, reject) => {
-      // Restore when the backend accepts public user creations
-      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
-      //if (err) console.error('Error hashing ' + err);
-      //this.http.post(`${this.url}/api/auth/signin`, { username, password: hash }).toPromise()
-      this.http
-        .post(`${this.url}/api/auth/login`, { username, password })
-        .toPromise()
-        .then(
-          (res) => {
-            this.updateAuth(res);
-            resolve(res);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-      //});
-    });
-
-    return promise;
-  }
-
-  public logout(): any {
+  public logout() {
     localStorage.removeItem('jwt');
-    localStorage.removeItem('user');
-    this.authUser.next(false);
-    return true;
   }
 
   public register(username: string, password: string, email: string) {
     const promise = new Promise<any>((resolve, reject) => {
-      //bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
       this.http
         .post(`${this.url}/api/auth/register`, {
           username,
@@ -72,29 +58,28 @@ export class AuthService {
             reject(err);
           }
         );
-      //});
     });
 
     return promise;
   }
 
-  private saveToken(user: any): boolean {
+  private updateAuth(loggedUser: any) {
+    const user: iUser = {
+      logged: true,
+      username: loggedUser.username,
+      email: loggedUser.email,
+      roles: loggedUser.roles,
+    };
+
+    //this.userStore.dispatch(UserStore.actions.login({ user }));
+
+    this.saveToken(loggedUser);
+  }
+
+  private saveToken(user: any) {
     if (user.err) {
       return false;
     }
     localStorage.setItem('jwt', user.accessToken);
-    localStorage.setItem('user', JSON.stringify(user));
-    return true;
-  }
-
-  public isIdentified() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const loggedIn = user && user.username ? true : false;
-    this.authUser.next(loggedIn);
-  }
-
-  public getUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    return user;
   }
 }

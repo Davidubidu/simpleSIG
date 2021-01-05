@@ -5,3 +5,16 @@
 .example-spacer {
   flex: 1 1 auto;
 }
+
+.nav-text {
+  display: flex;
+  align-items: center;
+}
+
+.nav-text:hover {
+  cursor: pointer;
+}
+
+mat-icon {
+  margin-right: 15px;
+}
