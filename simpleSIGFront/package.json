@@ -21,6 +21,8 @@
     "@angular/platform-browser": "~9.1.11",
     "@angular/platform-browser-dynamic": "~9.1.11",
     "@angular/router": "~9.1.11",
+    "@ngrx/effects": "~10.1.2",
+    "@ngrx/store": "~10.1.2",
     "@types/ol": "~6.4.1",
     "bcryptjs": "~ 2.4.3",
     "ol": "~6.4.3",

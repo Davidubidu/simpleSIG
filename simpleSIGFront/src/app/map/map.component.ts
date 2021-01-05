@@ -16,12 +16,6 @@ export class MapComponent implements OnInit {
   dataMap: any;
 
   ngOnInit(): void {
-    // FIXME: Change this to future User.store or similar
-    this.auth.user.subscribe((logged) => {
-      this.isLogged = logged;
-      this.logedUser = this.auth.getUserInfo().username;
-    });
-
     this.mapPoint.getMapPoints().then((mapPoints, err) => {
       if (err) {
         console.error(err);

@@ -5,5 +5,5 @@
 <!-- FIXME: evaluate if we really need this library-->
 <script src="https://unpkg.com/elm-pep"></script>
 
-<app-main-topbar [title]="title" [username]="logedUser"></app-main-topbar>
+<app-main-topbar [title]="title" [logged]="logged$ | async" [username]="username$ | async" (login)="login()" (logout)="logout()"></app-main-topbar>
 <router-outlet></router-outlet>

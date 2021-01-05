@@ -3,7 +3,8 @@
     <span>{{ title }}</span>
     
     <span class="example-spacer"></span>
-    <span>Welcome: {{ username }}</span>
-    <mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">settings</mat-icon>
+    <span *ngIf="logged">Welcome: {{ username }}</span>
+    <div *ngIf="!logged" class="nav-text" (click)="clickLogin()"><mat-icon class="example-icon" aria-hidden="false" aria-label="Login">login</mat-icon> Login</div>
+    <div *ngIf="logged" class="nav-text" (click)="clickLogout()"><mat-icon class="example-icon" aria-hidden="false" aria-label="Logout">exit_to_app</mat-icon> Logout</div>
   </mat-toolbar-row>
 </mat-toolbar>

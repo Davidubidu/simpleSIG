@@ -11,47 +11,21 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "@interceptors": [
-        "src/app/interceptors"
-      ],
-      "@services": [
-        "src/app/services"
-      ],
-      "@admin": [
-        "src/app/admin"
-      ],
-      "@admin/*": [
-        "src/app/admin/*"
-      ],
-      "@auth": [
-        "src/app/auth"
-      ],
-      "@auth/*": [
-        "src/app/auth/*"
-      ],
-      "@map": [
-        "src/app/map"
-      ],
-      "@map/*": [
-        "src/app/map/*"
-      ],
-      "@settings": [
-        "src/app/settings"
-      ],
-      "@settings/*": [
-        "src/app/settings/*"
-      ],
-      "@components": [
-        "src/app/components"
-      ],
-      "@components/*": [
-        "src/app/components/*"
-      ],
+      "@interceptors": ["src/app/interceptors/index.ts"],
+      "@services": ["src/app/services/index.ts"],
+      "@admin": ["src/app/admin/index.ts"],
+      "@admin/*": ["src/app/admin/*"],
+      "@auth": ["src/app/auth/index.ts"],
+      "@auth/*": ["src/app/auth/*"],
+      "@map": ["src/app/map/index.ts"],
+      "@map/*": ["src/app/map/*"],
+      "@settings": ["src/app/settings/index.ts"],
+      "@settings/*": ["src/app/settings/*"],
+      "@components": ["src/app/components/index.ts"],
+      "@models": ["src/app/models/index.ts"],
+      "@stores": ["src/app/stores/index.ts"]
     }
   },
   "angularCompilerOptions": {
